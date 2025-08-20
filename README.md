@@ -110,24 +110,6 @@ STABILITY_API_KEY=sk-your-stability-key-here
 - `GET /music/{filename}.mp3` - Получение аудио файлов
 - `WebSocket /session/{sid}/stream` - Real-time стриминг
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 Лицензия
-
-Этот проект лицензирован под MIT License - см. файл [LICENSE](LICENSE) для подробностей.
-
-## 📧 Контакты
-
-- **Email:** your-email@example.com
-- **GitHub:** [your-username](https://github.com/your-username)
-- **LinkedIn:** [your-profile](https://linkedin.com/in/your-profile)
-
 ## 🙏 Благодарности
 
 - [Stability AI](https://stability.ai/) за API генерации изображений
