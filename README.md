@@ -109,9 +109,3 @@ STABILITY_API_KEY=sk-your-stability-key-here
 - `GET /images/{filename}` - Получение изображений
 - `GET /music/{filename}.mp3` - Получение аудио файлов
 - `WebSocket /session/{sid}/stream` - Real-time стриминг
-
-## 🙏 Благодарности
-
-- [Stability AI](https://stability.ai/) за API генерации изображений
-- [OpenAI](https://openai.com/) за API моделей
-- [TimeWeb](https://timeweb.com/) за хостинг
