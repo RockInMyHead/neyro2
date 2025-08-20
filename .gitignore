@@ -1,0 +1,21 @@
+-e # Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Logs
+*.log
+
+# Build outputs
+dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Archive
+*.tar.gz
