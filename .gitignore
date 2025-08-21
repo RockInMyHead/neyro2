@@ -158,3 +158,4 @@ dev_*.log
 # Production builds (keep only timeweb-deploy)
 frontend/
 !timeweb-deploy/
+docker/
