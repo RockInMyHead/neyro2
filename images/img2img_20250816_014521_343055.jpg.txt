@@ -1,0 +1,7 @@
+Base image: test.jpg
+Strength: 0.7
+Rewrite mode: fast
+Processing time: 0ms
+Original prompt: дракон дракон
+Enhanced prompt: majestic dragon with iridescent scales, powerful wings, fantasy realm majestic dragon with iridescent scales, powerful wings, fantasy realm, fantasy art style, magical atmosphere, ethereal lighting, high resolution, sharp focus, professional lighting
+Final prompt: majestic, dragon, with, iridescent, scales,, powerful, wings,, fantasy prominently, majestic dragon with iridescent scales, powerful wings, fantasy realm majestic dragon with iridescent scales, powerful wings, fantasy realm, fantasy art style, magical atmosphere, ethereal lighting, high resolution, sharp focus, professional lighting

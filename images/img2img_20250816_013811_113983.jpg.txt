@@ -1,0 +1,7 @@
+Base image: test.jpg
+Strength: 0.7
+Rewrite mode: fast
+Processing time: 0ms
+Original prompt: собака собака
+Enhanced prompt: собака собака, photorealistic, ultra detailed, professional photography, high resolution, sharp focus, professional lighting
+Final prompt: professional prominently, собака собака, photorealistic, ultra detailed, professional photography, high resolution, sharp focus, professional lighting

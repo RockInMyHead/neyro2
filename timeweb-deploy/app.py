@@ -18,15 +18,13 @@ from shemas import SessionCreateIn, PromptIn
 # ────────────────────────────────────
 # Stability AI Core image generation config
 # ────────────────────────────────────
-STABILITY_API_KEY = (
-    "sk-9BlZisDvEvF9Jewp4AbNOfay24M44gTGdCTRAeN9WnCX5uld"
-)
+STABILITY_API_KEY = os.getenv("STABILITY_API_KEY", "")
 STABILITY_URL = "https://api.stability.ai/v2beta/stable-image/generate/core"
 STABILITY_HEADERS = {
     "Authorization": f"Bearer {STABILITY_API_KEY}",
     "Accept": "image/*",
 }
-STABILITY_TIMEOUT_SECONDS = 60
+STABILITY_TIMEOUT_SECONDS = int(os.getenv("STABILITY_TIMEOUT_SECONDS", "60"))
 
 # Опционально: загрузка переменных окружения из .env, если установлен python-dotenv
 try:  # pragma: no cover
