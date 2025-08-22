@@ -18,5 +18,5 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no ${{secrets.SHH_USER}}@${{ secrets.SERVER_IP }} 'cd ~/neyro2 && git pull origin deploy && cd docker && docker compose up -d'
+          ssh -o StrictHostKeyChecking=no ${{secrets.SHH_USER}}@${{ secrets.SERVER_IP }} '~/deploy.sh'
 
