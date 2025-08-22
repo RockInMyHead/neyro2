@@ -276,6 +276,11 @@ async def get_image(filename: str):
 # ────────────────────────────────────
 # REST: создание сессии и добавление промптов (без генерации)
 # ────────────────────────────────────
+@app.options("/session")
+async def session_options():
+    """Handle CORS preflight requests for /session"""
+    return Response(status_code=200)
+
 @app.post("/session")
 async def create_session(data: SessionCreateIn):
     initial = data.prompts or ["Demo"]
@@ -283,6 +288,11 @@ async def create_session(data: SessionCreateIn):
     sessions[sid] = list(initial)
     return JSONResponse({"session_id": sid, "prompts": initial})
 
+
+@app.options("/session/{sid}/prompt")
+async def add_prompt_options(sid: str):
+    """Handle CORS preflight requests for /session/{sid}/prompt"""
+    return Response(status_code=200)
 
 @app.post("/session/{sid}/prompt")
 async def add_prompt(sid: str, data: PromptIn):
@@ -292,6 +302,11 @@ async def add_prompt(sid: str, data: PromptIn):
     return {"status": "accepted", "prompt": data.prompt}
 
 # Новые эндпоинты для управления пользовательскими промптами
+@app.options("/session/{sid}/user_prompt")
+async def add_user_prompt_options(sid: str):
+    """Handle CORS preflight requests for /session/{sid}/user_prompt"""
+    return Response(status_code=200)
+
 @app.post("/session/{sid}/user_prompt")
 async def add_user_prompt(sid: str, data: PromptIn):
     """Добавляет пользовательский промпт для текущего изображения"""
@@ -319,6 +334,11 @@ async def add_user_prompt(sid: str, data: PromptIn):
         "image_index": current_idx,
         "accumulated_prompts": user_prompts_storage[sid][current_idx]
     }
+
+@app.options("/session/{sid}/next_image")
+async def next_image_options(sid: str):
+    """Handle CORS preflight requests for /session/{sid}/next_image"""
+    return Response(status_code=200)
 
 @app.post("/session/{sid}/next_image")
 async def next_image(sid: str):
@@ -366,6 +386,11 @@ async def debug_openai():
         "use_v1_client": _use_v1_client,
         "has_env_key": bool(os.getenv("OPENAI_API_KEY")),
     }
+
+@app.options("/generate_dalle")
+async def generate_dalle_options():
+    """Handle CORS preflight requests for /generate_dalle"""
+    return Response(status_code=200)
 
 @app.post("/generate_dalle")
 async def generate_dalle(
@@ -792,6 +817,11 @@ async def _enhance_prompt_llm(user_prompt: str, base_prompt: str = "") -> str:
 
 
 # Необязательный вспомогательный REST-ендпоинт для отладки усиления промта
+@app.options("/enhance_prompt")
+async def enhance_prompt_options():
+    """Handle CORS preflight requests for /enhance_prompt"""
+    return Response(status_code=200)
+
 @app.post("/enhance_prompt")
 async def enhance_prompt_api(payload: Dict = Body(..., embed=False)):
     user_prompt = (payload.get("prompt") or "").strip()
