@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: neuro-backend
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: STABILITY_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+    disk:
+      name: images
+      mountPath: /opt/render/project/src/images
+      sizeGB: 1

@@ -1,0 +1,7 @@
+Base image: test.jpg
+Strength: 0.6
+Rewrite mode: fast
+Processing time: 0ms
+Original prompt: кот кот
+Enhanced prompt: beautiful cat beautiful cat
+Final prompt: beautiful cat beautiful cat
