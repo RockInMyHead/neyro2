@@ -12,6 +12,7 @@ import uvicorn
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.staticfiles import StaticFiles
 
 from shemas import SessionCreateIn, PromptIn
 
@@ -222,11 +223,51 @@ except Exception:  # pragma: no cover
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:8000", "http://127.0.0.1:8000", "http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
 )
+
+# Альтернативный способ обслуживания статических файлов
+import os
+
+# Простые эндпоинты для статических файлов
+@app.get("/assets/{filename}")
+async def get_asset(filename: str):
+    assets_path = os.path.join(os.path.dirname(__file__), "timeweb-deploy", "public", "assets", filename)
+    if os.path.exists(assets_path):
+        return FileResponse(assets_path)
+    raise HTTPException(status_code=404, detail="Asset not found")
+
+@app.get("/images/{filename}")
+async def get_image_file(filename: str):
+    images_path = os.path.join(os.path.dirname(__file__), "timeweb-deploy", "public", "images", filename)
+    if os.path.exists(images_path):
+        return FileResponse(images_path)
+    raise HTTPException(status_code=404, detail="Image not found")
+
+# Эндпоинты для других статических файлов
+@app.get("/{filename}")
+async def get_static_file(filename: str):
+    # Обслуживаем статические файлы из public директории
+    if filename.endswith(('.svg', '.png', '.jpg', '.jpeg', '.gif', '.mp4', '.mp3', '.ico', '.woff', '.woff2')):
+        file_path = os.path.join(os.path.dirname(__file__), "timeweb-deploy", "public", filename)
+        if os.path.exists(file_path):
+            return FileResponse(file_path)
+    raise HTTPException(status_code=404, detail="File not found")
+
+@app.get("/music/{filename}.mp3")
+async def get_music_file(filename: str):
+    music_path = os.path.join(os.path.dirname(__file__), "timeweb-deploy", "music", f"{filename}.mp3")
+    if os.path.exists(music_path):
+        return FileResponse(music_path, media_type="audio/mpeg")
+    raise HTTPException(status_code=404, detail="Music file not found")
+
+# Маршрут для главной страницы
+@app.get("/")
+async def read_root():
+    return FileResponse("timeweb-deploy/public/index.html", media_type="text/html")
 
 # Простейшее хранилище сессий: sid → список промптов
 sessions: Dict[str, List[str]] = {}
@@ -802,6 +843,8 @@ async def enhance_prompt_api(payload: Dict = Body(..., embed=False)):
         raise HTTPException(status_code=400, detail="prompt is required")
     enhanced = await _enhance_prompt_llm(user_prompt=user_prompt, base_prompt=base_prompt)
     return {"enhanced_prompt": enhanced}
+
+# Используем простые эндпоинты вместо StaticFiles для лучшей совместимости
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
