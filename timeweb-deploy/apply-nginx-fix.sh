@@ -4,6 +4,7 @@ echo "🔧 Применение исправленной nginx конфигур�
 
 # Путь к конфигурации
 NGINX_CONF="/etc/nginx/sites-available/neyro"
+NGINX_CONF_ENABLED="/etc/nginx/sites-enabled/neyro"
 NGINX_CONF_BACKUP="/etc/nginx/sites-available/neyro.backup.$(date +%Y%m%d_%H%M%S)"
 
 # Создаем бэкап текущей конфигурации
@@ -15,7 +16,14 @@ fi
 
 # Копируем новую конфигурацию
 echo "📋 Копирование новой конфигурации..."
-cp "/home/neyro/neyro2/timeweb-deploy/nginx.conf" "$NGINX_CONF"
+echo "🔧 Используем упрощенную версию без проблемных if блоков..."
+cp "/home/neyro/neyro2/timeweb-deploy/nginx-simple.conf" "$NGINX_CONF"
+
+# Создаем символическую ссылку если её нет
+if [ ! -L "$NGINX_CONF_ENABLED" ]; then
+    echo "🔗 Создание символической ссылки..."
+    ln -sf "$NGINX_CONF" "$NGINX_CONF_ENABLED"
+fi
 
 # Проверяем синтаксис
 echo "🔍 Проверка синтаксиса nginx..."
@@ -42,6 +50,8 @@ else
         cp "$NGINX_CONF_BACKUP" "$NGINX_CONF"
         echo "✅ Конфигурация восстановлена из бэкапа"
     fi
+    echo "🔍 Проверьте конфигурацию вручную:"
+    echo "   sudo nginx -t -c $NGINX_CONF"
     exit 1
 fi
 
