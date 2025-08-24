@@ -138,7 +138,7 @@ Thumbs.db
 
 # Project specific
 images/generated_*.jpg
-*.mp3
+# *.mp3
 test*.jpg
 translation_cache.pkl
 russian_english_dict.py
