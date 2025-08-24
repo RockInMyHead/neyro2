@@ -250,18 +250,37 @@ async def get_image_file(filename: str):
 # Эндпоинты для других статических файлов
 @app.get("/{filename}")
 async def get_static_file(filename: str):
-    # Обслуживаем статические файлы из public директории
+    # Обслуживаем статические файлы из public директории или корневой
     if filename.endswith(('.svg', '.png', '.jpg', '.jpeg', '.gif', '.mp4', '.mp3', '.ico', '.woff', '.woff2')):
+        # Сначала проверяем в public директории
         file_path = os.path.join(os.path.dirname(__file__), "timeweb-deploy", "public", filename)
         if os.path.exists(file_path):
+            # Определяем правильный MIME тип для mp3
+            if filename.endswith('.mp3'):
+                return FileResponse(file_path, media_type="audio/mpeg")
             return FileResponse(file_path)
+
+        # Если не нашли в public, проверяем в корневой директории для mp3 файлов
+        if filename.endswith('.mp3'):
+            root_path = os.path.join(os.path.dirname(__file__), filename)
+            if os.path.exists(root_path):
+                return FileResponse(root_path, media_type="audio/mpeg")
+
     raise HTTPException(status_code=404, detail="File not found")
 
 @app.get("/music/{filename}.mp3")
 async def get_music_file(filename: str):
-    music_path = os.path.join(os.path.dirname(__file__), "timeweb-deploy", "music", f"{filename}.mp3")
-    if os.path.exists(music_path):
-        return FileResponse(music_path, media_type="audio/mpeg")
+    # Ищем файлы сначала в корневой директории, потом в music/
+    candidate_paths = [
+        os.path.join(os.path.dirname(__file__), f"{filename}.mp3"),
+        os.path.join(os.path.dirname(__file__), "music", f"{filename}.mp3"),
+        os.path.join(os.path.dirname(__file__), "timeweb-deploy", "music", f"{filename}.mp3")
+    ]
+
+    for music_path in candidate_paths:
+        if os.path.exists(music_path):
+            return FileResponse(music_path, media_type="audio/mpeg")
+
     raise HTTPException(status_code=404, detail="Music file not found")
 
 # Маршрут для главной страницы
@@ -283,18 +302,6 @@ current_image_index: Dict[str, int] = {}
 # ────────────────────────────────────
 # Пример: отдача статичных mp3 (не алгоритм)
 # ────────────────────────────────────
-@app.get("/music/{filename}.mp3")
-async def get_music(filename: str):
-    base = os.path.dirname(__file__)
-    # Ищем сначала в папке music/, затем в корне проекта
-    candidate_paths = [
-        os.path.join(base, "music", f"{filename}.mp3"),
-        os.path.join(base, f"{filename}.mp3"),
-    ]
-    for fp in candidate_paths:
-        if os.path.isfile(fp):
-            return FileResponse(fp, media_type="audio/mpeg")
-    raise HTTPException(status_code=404, detail="Music not found")
 
 
 @app.get("/images/{filename}")
@@ -847,4 +854,4 @@ async def enhance_prompt_api(payload: Dict = Body(..., embed=False)):
 # Используем простые эндпоинты вместо StaticFiles для лучшей совместимости
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8003)

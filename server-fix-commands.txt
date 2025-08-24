@@ -1,0 +1,48 @@
+# Команды для исправления проблем на сервере TimeWeb
+
+# 1. Переходим в папку с проектом
+cd /var/www/timeweb-deploy
+
+# 2. Проверяем содержимое папки
+ls -la
+
+# 3. Даем права на выполнение скриптов
+chmod +x fix-timeweb-server.sh
+chmod +x check-server-status.sh
+chmod +x fix-nginx-universal.sh
+
+# 4. Запускаем исправление
+sudo bash fix-timeweb-server.sh
+
+# 5. Если есть проблемы, запускаем универсальное исправление
+sudo bash fix-nginx-universal.sh
+
+# 6. Проверяем статус после исправления
+bash check-server-status.sh
+
+# Альтернативные способы исправления:
+
+# Вариант A: Быстрое исправление
+sudo bash quick-start.sh
+
+# Вариант B: Ручное исправление
+sudo bash manual-fix.sh
+
+# Вариант C: Простое исправление
+sudo bash simple-fix.sh
+
+# Проверка статуса backend сервера
+curl -s http://127.0.0.1:8000/docs > /dev/null && echo "Backend OK" || echo "Backend ERROR"
+
+# Проверка nginx
+sudo nginx -t && echo "Nginx OK" || echo "Nginx ERROR"
+
+# Проверка статических файлов
+curl -I http://194.87.226.56/music/2.mp3
+curl -I http://194.87.226.56/assets/index-Dp3_vkor.js
+curl -I http://194.87.226.56/generate_dalle
+
+# Логи для диагностики
+tail -f backend.log
+sudo tail -f /var/log/nginx/error.log
+sudo tail -f /var/log/nginx/access.log
