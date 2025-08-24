@@ -17,17 +17,25 @@
 ### Почему происходит:
 - Файл `2.mp3` находится в `/home/neyro/neyro2/` (корневая директория)
 - Фронтенд ищет его по пути `/music/2.mp3`
-- Nginx конфигурация не правильно обрабатывает этот путь
+- Директория `music/` не существует на сервере
+- Nginx конфигурация не может найти файл по пути `/music/2.mp3`
 
 ## ✅ Решение
 
-### 1. Обновленная nginx конфигурация
-В `nginx-simple.conf` добавлены специальные правила:
+### 1. Создание директории music и копирование файлов
+```bash
+cd /home/neyro/neyro2/timeweb-deploy
+chmod +x create-music-dir.sh
+./create-music-dir.sh
+```
+
+### 2. Обновленная nginx конфигурация
+В `nginx-simple.conf` настроены правила:
 
 ```nginx
 # Статические файлы - музыка (из корневой директории)
 location /music/ {
-    alias /home/neyro/neyro2/;
+    alias /home/neyro/neyro2/music/;
     expires 1y;
     add_header Cache-Control "public, immutable";
     add_header Content-Type "audio/mpeg";
@@ -36,16 +44,19 @@ location /music/ {
 
 # Дополнительная обработка для /music/2.mp3
 location = /music/2.mp3 {
-    alias /home/neyro/neyro2/2.mp3;
+    alias /home/neyro/neyro2/music/2.mp3;
     expires 1y;
     add_header Cache-Control "public, immutable";
     add_header Content-Type "audio/mpeg";
 }
 ```
 
-### 2. Применение исправлений
+### 3. Применение исправлений
 ```bash
 cd /home/neyro/neyro2/timeweb-deploy
+
+# Создать директорию music и скопировать файлы
+./create-music-dir.sh
 
 # Применить новую конфигурацию
 cp nginx-simple.conf /etc/nginx/sites-available/neyro
@@ -54,7 +65,7 @@ cp nginx-simple.conf /etc/nginx/sites-available/neyro
 systemctl restart nginx
 ```
 
-### 3. Тестирование
+### 4. Тестирование
 ```bash
 # Запустить тест доступа к MP3
 chmod +x test-mp3-access.sh
@@ -109,7 +120,7 @@ ln -sf /home/neyro/neyro2/2.mp3 /home/neyro/neyro2/music/2.mp3
 
 2. **Проверить права доступа:**
    ```bash
-   ls -la /home/neyro/neyro2/2.mp3
+   ls -la /home/neyro/neyro2/music/2.mp3
    ```
 
 3. **Проверить конфигурацию:**
@@ -126,4 +137,13 @@ ln -sf /home/neyro/neyro2/2.mp3 /home/neyro/neyro2/music/2.mp3
 После исправления:
 - ✅ `http://194.87.226.56/music/2.mp3` должен возвращать 200 OK
 - ✅ Фронтенд должен загружать MP3 файлы без ошибок 404
-- ✅ Музыка должна воспроизводиться корректно 
+- ✅ Музыка должна воспроизводиться корректно
+
+## 🚀 Быстрое исправление
+```bash
+cd /home/neyro/neyro2/timeweb-deploy
+./create-music-dir.sh
+cp nginx-simple.conf /etc/nginx/sites-available/neyro
+systemctl restart nginx
+./test-mp3-access.sh
+``` 
