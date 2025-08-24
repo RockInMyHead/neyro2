@@ -25,6 +25,12 @@ chmod +x force-nginx-fix.sh
 ./force-nginx-fix.sh
 ```
 
+### 3.5 Альтернатива - полный сброс nginx:
+```bash
+chmod +x nginx-reset.sh
+./nginx-reset.sh
+```
+
 ### 4. Ручное исправление (если скрипты не работают):
 ```bash
 # Остановить nginx

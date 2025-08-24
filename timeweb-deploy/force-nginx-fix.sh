@@ -23,6 +23,21 @@ echo "🗑️ Удаление старой конфигурации..."
 rm -f "$NGINX_ENABLED"
 rm -f "$NGINX_CONF"
 
+# Полная очистка всех nginx конфигураций
+echo "🧹 Полная очистка nginx конфигураций..."
+rm -f /etc/nginx/sites-enabled/*
+rm -f /etc/nginx/sites-available/neyro*
+find /etc/nginx -name "*neyro*" -type f -delete
+
+# Очистка кэша nginx
+echo "🧽 Очистка кэша nginx..."
+rm -rf /var/cache/nginx/*
+rm -rf /var/lib/nginx/*
+
+# Перезагрузка systemd для nginx
+echo "🔄 Перезагрузка systemd..."
+systemctl daemon-reload
+
 # Копирование новой конфигурации
 echo "📋 Копирование новой конфигурации..."
 cp "/home/neyro/neyro2/timeweb-deploy/nginx-simple.conf" "$NGINX_CONF"
